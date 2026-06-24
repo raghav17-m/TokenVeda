@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TokenVeda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-400: #1D9E75; --teal-600: #0F6E56; --teal-800: #085041;
+    --blue-50: #E6F1FB; --blue-100: #B5D4F4; --blue-400: #378ADD; --blue-600: #185FA5; --blue-800: #0C447C;
+    --amber-50: #FAEEDA; --amber-400: #BA7517; --amber-800: #633806;
+    --coral-50: #FAECE7; --coral-400: #D85A30; --coral-800: #712B13;
+    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-400: #888780; --gray-600: #5F5E5A; --gray-800: #444441;
+    --red-50: #FCEBEB; --red-400: #E24B4A; --red-800: #791F1F;
+    --green-50: #EAF3DE; --green-400: #639922; --green-800: #27500A;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #F8F9FA;
+    color: #1a1a1a;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: #fff;
+    border-bottom: 1px solid #E8E8E8;
+    padding: 0 2rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--teal-600);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .logo span { color: var(--gray-800); font-weight: 400; font-size: 14px; }
+  .view-switcher {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 10px;
+    padding: 4px;
+  }
+  .view-btn {
+    padding: 7px 18px;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    color: var(--gray-600);
+    transition: all 0.15s;
+  }
+  .view-btn.active {
+    background: #fff;
+    color: var(--teal-600);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--teal-600);
+    font-weight: 500;
+  }
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--teal-400);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 2rem; max-width: 1100px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* ── RECEPTIONIST ── */
+  .recep-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #EBEBEB;
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title svg { color: var(--teal-400); }
+
+  /* Current token hero */
+  .current-token-hero {
+    background: linear-gradient(135deg, var(--teal-600) 0%, var(--teal-400) 100%);
+    border-radius: 14px;
+    padding: 2rem;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .current-token-hero .label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+  .token-number-big {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 80px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .token-name-big {
+    font-size: 18px;
+    font-weight: 500;
+    opacity: 0.9;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--gray-50);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .stat-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .stat-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* Call Next button */
+  .call-next-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--teal-600);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Space Grotesk', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .call-next-btn:hover { background: var(--teal-800); transform: translateY(-1px); }
+  .call-next-btn:active { transform: scale(0.99); }
+  .call-next-btn:disabled {
+    background: var(--gray-100);
+    color: var(--gray-400);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Add patient form */
+  .form-group { margin-bottom: 1rem; }
+  .form-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+    background: #FAFAFA;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { outline: none; border-color: var(--teal-400); background: #fff; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .add-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--blue-600);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .add-btn:hover { background: var(--blue-800); }
+
+  /* Settings */
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-size: 13px; color: var(--gray-800); }
+  .settings-value-input {
+    width: 80px;
+    padding: 6px 10px;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--teal-600);
+    background: var(--teal-50);
+    border-color: var(--teal-100);
+  }
+  .settings-value-input:focus { outline: none; border-color: var(--teal-400); }
+
+  /* Queue list */
+  .queue-list { display: flex; flex-direction: column; gap: 6px; }
+  .queue-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #FAFAFA;
+    border: 1px solid #F0F0F0;
+    transition: all 0.2s;
+  }
+  .queue-item.calling {
+    background: var(--teal-50);
+    border-color: var(--teal-100);
+  }
+  .queue-item.done {
+    opacity: 0.4;
+  }
+  .token-badge {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--gray-100);
+    color: var(--gray-800);
+  }
+  .queue-item.calling .token-badge {
+    background: var(--teal-400);
+    color: #fff;
+  }
+  .queue-patient-name { font-size: 14px; font-weight: 500; flex: 1; }
+  .queue-patient-reason { font-size: 12px; color: var(--gray-400); }
+  .queue-status-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .pill-waiting { background: var(--amber-50); color: var(--amber-400); }
+  .pill-calling { background: var(--green-50); color: var(--green-400); }
+  .pill-done { background: var(--gray-50); color: var(--gray-400); }
+  .empty-queue {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray-400);
+    font-size: 14px;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--gray-400);
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+  }
+  .remove-btn:hover { color: var(--coral-400); }
+
+  /* ── PATIENT VIEW ── */
+  .patient-page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  .patient-hero {
+    background: #fff;
+    border: 1px solid #EBEBEB;
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .patient-hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--teal-400), var(--blue-400));
+  }
+  .now-serving-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal-400);
+    margin-bottom: 8px;
+  }
+  .now-serving-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 100px;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--teal-600);
+    margin-bottom: 4px;
+  }
+  .now-serving-name {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin-bottom: 1.5rem;
+  }
+  .patient-stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 1.5rem;
+  }
+  .patient-stat {
+    background: var(--gray-50);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .patient-stat-val {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .patient-stat-label {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  /* My token lookup */
+  .lookup-card {
+    background: #fff;
+    border: 1px solid #EBEBEB;
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .lookup-row {
+    display: flex;
+    gap: 8px;
+  }
+  .lookup-input {
+    flex: 1;
+    padding: 11px 14px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    font-size: 20px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    color: var(--teal-600);
+  }
+  .lookup-input:focus { outline: none; border-color: var(--teal-400); }
+  .lookup-btn {
+    padding: 11px 20px;
+    background: var(--teal-600);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .lookup-btn:hover { background: var(--teal-800); }
+
+  /* My token result card */
+  .my-token-card {
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 12px;
+    border: 1px solid;
+    display: none;
+  }
+  .my-token-card.visible { display: block; }
+  .my-token-card.waiting {
+    background: var(--amber-50);
+    border-color: #F5C47595;
+  }
+  .my-token-card.now {
+    background: var(--green-50);
+    border-color: #C0DD9795;
+  }
+  .my-token-card.done {
+    background: var(--gray-50);
+    border-color: var(--gray-100);
+  }
+  .my-token-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .waiting .my-token-title { color: var(--amber-400); }
+  .now .my-token-title { color: var(--green-400); }
+  .done .my-token-title { color: var(--gray-400); }
+  .my-token-info { font-size: 14px; color: var(--gray-800); line-height: 1.6; }
+
+  /* Live queue table for patient view */
+  .queue-visual {
+    background: #fff;
+    border: 1px solid #EBEBEB;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .queue-visual-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .queue-visual-list { max-height: 340px; overflow-y: auto; }
+  .queue-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #F8F8F8;
+    gap: 14px;
+    transition: background 0.2s;
+  }
+  .queue-row.active { background: var(--teal-50); }
+  .queue-row .pos {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    width: 28px;
+    color: var(--gray-400);
+  }
+  .queue-row.active .pos { color: var(--teal-600); }
+  .queue-row .name { flex: 1; font-size: 14px; font-weight: 500; }
+  .queue-row .wait-est { font-size: 13px; color: var(--gray-400); }
+  .queue-row.active .wait-est { color: var(--teal-400); font-weight: 600; }
+
+  /* Flash animation on call next */
+  @keyframes flash-in {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .flash { animation: flash-in 0.3s ease-out; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--gray-100); border-radius: 2px; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--teal-800);
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 999;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+    TokenVeda <span>| Smart Clinic Queue</span>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:1.5rem;">
+    <div class="live-badge">
+      <div class="live-dot"></div>
+      Live Sync Active
+    </div>
+    <div class="view-switcher">
+      <button class="view-btn active" onclick="switchView('receptionist')">
+        🏥 Receptionist
+      </button>
+      <button class="view-btn" onclick="switchView('patient')">
+        🪑 Patient View
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ RECEPTIONIST PAGE ═══════════════════════════ -->
+<div id="page-receptionist" class="page active">
+  <div class="recep-grid">
+
+    <!-- LEFT COLUMN -->
+    <div>
+      <!-- Current token hero -->
+      <div class="current-token-hero" id="recep-hero">
+        <div class="label">Now Serving</div>
+        <div class="token-number-big" id="recep-current-token">—</div>
+        <div class="token-name-big" id="recep-current-name">No patient in session</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-waiting">0</div>
+          <div class="stat-label">Waiting</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-total">0</div>
+          <div class="stat-label">Total Today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-done">0</div>
+          <div class="stat-label">Done</div>
+        </div>
+      </div>
+
+      <!-- Call Next -->
+      <button class="call-next-btn" id="call-next-btn" onclick="callNext()">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+        Call Next Patient
+      </button>
+
+      <!-- Queue list -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="12" y2="17"/>
+          </svg>
+          Today's Queue
+        </div>
+        <div class="queue-list" id="recep-queue-list">
+          <div class="empty-queue">No patients yet. Add one →</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+      <!-- Add Patient -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div class="card-title">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>
+          </svg>
+          Add Patient
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Patient Name</label>
+          <input type="text" class="form-input" id="input-name" placeholder="e.g. Priya Sharma" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason for Visit</label>
+          <input type="text" class="form-input" id="input-reason" placeholder="e.g. Fever, BP checkup" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Age</label>
+            <input type="number" class="form-input" id="input-age" placeholder="28" min="1" max="120" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone (last 4)</label>
+            <input type="text" class="form-input" id="input-phone" placeholder="3456" maxlength="4" />
+          </div>
+        </div>
+        <button class="add-btn" onclick="addPatient()">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Add to Queue
+        </button>
+      </div>
+
+      <!-- Settings -->
+      <div class="card">
+        <div class="card-title">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Clinic Settings
+        </div>
+
+        <div class="settings-row">
+          <span class="settings-label">Avg. consultation time</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <input type="number" class="settings-value-input" id="avg-time" value="8" min="1" max="60" onchange="broadcastState()" />
+            <span style="font-size:12px;color:var(--gray-400);">min</span>
+          </div>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Doctor's name</span>
+          <input type="text" class="settings-value-input" id="doctor-name" value="Dr. Rajan" style="width:110px;text-align:left;font-size:12px;" onchange="broadcastState()" />
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Clinic name</span>
+          <input type="text" class="settings-value-input" id="clinic-name" value="City Clinic" style="width:110px;text-align:left;font-size:12px;" onchange="broadcastState()" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PATIENT PAGE ═══════════════════════════ -->
+<div id="page-patient" class="page">
+  <div class="patient-page">
+
+    <!-- Clinic header -->
+    <div style="text-align:center;margin-bottom:1.5rem;">
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#1a1a1a;" id="p-clinic-name">City Clinic</div>
+      <div style="font-size:13px;color:var(--gray-400);margin-top:2px;" id="p-doctor-name">Dr. Rajan</div>
+    </div>
+
+    <!-- Now Serving -->
+    <div class="patient-hero" id="patient-hero">
+      <div class="now-serving-label">Now Serving</div>
+      <div class="now-serving-number flash" id="p-current-token">—</div>
+      <div style="font-size:16px;color:var(--gray-400);margin-bottom:1.5rem;" id="p-current-name">Waiting to start</div>
+
+      <div class="patient-stats-row">
+        <div class="patient-stat">
+          <div class="patient-stat-val" id="p-ahead">0</div>
+          <div class="patient-stat-label">People waiting</div>
+        </div>
+        <div class="patient-stat">
+          <div class="patient-stat-val" id="p-wait-time">—</div>
+          <div class="patient-stat-label">Est. wait (mins)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Token Lookup -->
+    <div class="lookup-card">
+      <div class="card-title" style="margin-bottom:12px;">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        Check your token
+      </div>
+      <div class="lookup-row">
+        <input type="number" class="lookup-input" id="lookup-token-input" placeholder="T07" min="1" />
+        <button class="lookup-btn" onclick="lookupMyToken()">Check Status</button>
+      </div>
+      <div class="my-token-card" id="my-token-result">
+        <div class="my-token-title" id="my-token-status-label">Status</div>
+        <div class="my-token-info" id="my-token-info-text"></div>
+      </div>
+    </div>
+
+    <!-- Live queue display -->
+    <div class="queue-visual">
+      <div class="queue-visual-header">
+        <span>Live Queue</span>
+        <span style="color:var(--teal-400);font-size:12px;" id="p-queue-count">0 waiting</span>
+      </div>
+      <div class="queue-visual-list" id="p-queue-list">
+        <div style="text-align:center;padding:2rem;font-size:14px;color:var(--gray-400);">Queue is empty</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════ STATE ═══════════════════════════ */
+let state = {
+  queue: [],           // {id, token, name, reason, age, phone, status: 'waiting'|'calling'|'done'}
+  currentToken: null,
+  currentName: null,
+  tokenCounter: 0,
+  totalDone: 0,
+  avgTime: 8,
+};
+
+let channel;
+try {
+  channel = new BroadcastChannel('queue-cure-26');
+  channel.onmessage = (e) => {
+    if (e.data && e.data.type === 'STATE_UPDATE') {
+      state = e.data.state;
+      renderAll();
+    }
+  };
+} catch(e) {
+  console.log('BroadcastChannel not supported, single-tab mode');
+}
+
+function broadcastState() {
+  state.avgTime = parseInt(document.getElementById('avg-time').value) || 8;
+  try { channel && channel.postMessage({ type: 'STATE_UPDATE', state }); } catch(e) {}
+  renderAll();
+}
+
+/* ═══════════════════════════ CORE ACTIONS ═══════════════════════════ */
+function addPatient() {
+  const name = document.getElementById('input-name').value.trim();
+  const reason = document.getElementById('input-reason').value.trim();
+  const age = document.getElementById('input-age').value.trim();
+  const phone = document.getElementById('input-phone').value.trim();
+
+  if (!name) { showToast('Please enter patient name'); return; }
+
+  state.tokenCounter++;
+  const tokenNum = state.tokenCounter;
+  const tokenStr = 'T' + String(tokenNum).padStart(2, '0');
+
+  state.queue.push({
+    id: Date.now(),
+    token: tokenStr,
+    tokenNum,
+    name,
+    reason: reason || 'General consultation',
+    age: age || '—',
+    phone: phone || '—',
+    status: 'waiting'
+  });
+
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-reason').value = '';
+  document.getElementById('input-age').value = '';
+  document.getElementById('input-phone').value = '';
+
+  showToast(`${tokenStr} assigned to ${name}`);
+  broadcastState();
+}
+
+function callNext() {
+  const nextPatient = state.queue.find(p => p.status === 'waiting');
+
+  // Mark current calling as done
+  const calling = state.queue.find(p => p.status === 'calling');
+  if (calling) {
+    calling.status = 'done';
+    state.totalDone++;
+  }
+
+  if (!nextPatient) {
+    state.currentToken = null;
+    state.currentName = 'Queue empty';
+    showToast('No more patients in queue');
+    broadcastState();
+    return;
+  }
+
+  nextPatient.status = 'calling';
+  state.currentToken = nextPatient.token;
+  state.currentName = nextPatient.name;
+
+  showToast(`Calling ${nextPatient.token} — ${nextPatient.name}`);
+  broadcastState();
+
+  // Flash animation
+  document.getElementById('recep-current-token').classList.remove('flash');
+  void document.getElementById('recep-current-token').offsetWidth;
+  document.getElementById('recep-current-token').classList.add('flash');
+  document.getElementById('p-current-token').classList.remove('flash');
+  void document.getElementById('p-current-token').offsetWidth;
+  document.getElementById('p-current-token').classList.add('flash');
+}
+
+function removePatient(id) {
+  const idx = state.queue.findIndex(p => p.id === id);
+  if (idx === -1) return;
+  const p = state.queue[idx];
+  if (p.status === 'calling') {
+    state.currentToken = null;
+    state.currentName = 'No patient in session';
+  }
+  state.queue.splice(idx, 1);
+  broadcastState();
+}
+
+function lookupMyToken() {
+  const val = document.getElementById('lookup-token-input').value.trim();
+  if (!val) { showToast('Enter your token number'); return; }
+  const tokenStr = 'T' + String(parseInt(val)).padStart(2, '0');
+  const p = state.queue.find(q => q.token === tokenStr);
+  const card = document.getElementById('my-token-result');
+  const label = document.getElementById('my-token-status-label');
+  const info = document.getElementById('my-token-info-text');
+
+  card.className = 'my-token-card visible';
+
+  if (!p) {
+    card.classList.add('done');
+    label.textContent = 'Not Found';
+    info.textContent = `Token ${tokenStr} is not in today's queue.`;
+    return;
+  }
+
+  const avgTime = parseInt(document.getElementById('avg-time').value) || 8;
+  const waitingBefore = state.queue.filter(q => q.status === 'waiting' && q.tokenNum < p.tokenNum).length;
+
+  if (p.status === 'calling') {
+    card.classList.add('now');
+    label.textContent = '🟢 Your Turn Now!';
+    info.textContent = `Token ${tokenStr} — ${p.name} — Please proceed to the doctor's room.`;
+  } else if (p.status === 'done') {
+    card.classList.add('done');
+    label.textContent = 'Consultation Done';
+    info.textContent = `Token ${tokenStr} — ${p.name} — Your consultation is complete.`;
+  } else {
+    card.classList.add('waiting');
+    const est = waitingBefore * avgTime;
+    label.textContent = '⏳ Waiting';
+    info.textContent = `Token ${tokenStr} — ${p.name}\n${waitingBefore} patient${waitingBefore !== 1 ? 's' : ''} ahead of you. Estimated wait: ~${est} minute${est !== 1 ? 's' : ''}.`;
+  }
+}
+
+/* ═══════════════════════════ RENDER ═══════════════════════════ */
+function renderAll() {
+  const avgTime = parseInt(document.getElementById('avg-time').value) || state.avgTime || 8;
+  const waiting = state.queue.filter(q => q.status === 'waiting');
+  const done = state.queue.filter(q => q.status === 'done');
+
+  // ── RECEPTIONIST ──
+  document.getElementById('recep-current-token').textContent = state.currentToken || '—';
+  document.getElementById('recep-current-name').textContent = state.currentName || 'No patient in session';
+  document.getElementById('stat-waiting').textContent = waiting.length;
+  document.getElementById('stat-total').textContent = state.queue.length;
+  document.getElementById('stat-done').textContent = done.length;
+
+  const callBtn = document.getElementById('call-next-btn');
+  callBtn.disabled = waiting.length === 0;
+
+  // Queue list
+  const qList = document.getElementById('recep-queue-list');
+  if (state.queue.length === 0) {
+    qList.innerHTML = '<div class="empty-queue">No patients yet. Add from the panel →</div>';
+  } else {
+    qList.innerHTML = state.queue.map(p => `
+      <div class="queue-item ${p.status === 'calling' ? 'calling' : p.status === 'done' ? 'done' : ''}">
+        <div class="token-badge">${p.token}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="queue-patient-name">${p.name}</div>
+          <div class="queue-patient-reason">${p.reason} · Age ${p.age}</div>
+        </div>
+        <span class="queue-status-pill ${p.status === 'waiting' ? 'pill-waiting' : p.status === 'calling' ? 'pill-calling' : 'pill-done'}">
+          ${p.status === 'waiting' ? 'Waiting' : p.status === 'calling' ? 'In Session' : 'Done'}
+        </span>
+        ${p.status !== 'done' ? `<button class="remove-btn" onclick="removePatient(${p.id})" title="Remove">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>` : ''}
+      </div>`).join('');
+  }
+
+  // ── PATIENT ──
+  document.getElementById('p-clinic-name').textContent =
+    document.getElementById('clinic-name').value || 'City Clinic';
+  document.getElementById('p-doctor-name').textContent =
+    document.getElementById('doctor-name').value || 'Dr. Rajan';
+
+  document.getElementById('p-current-token').textContent = state.currentToken || '—';
+  document.getElementById('p-current-name').textContent = state.currentName || 'Waiting to start';
+  document.getElementById('p-ahead').textContent = waiting.length;
+
+  const totalWaitMin = waiting.length * avgTime;
+  document.getElementById('p-wait-time').textContent = waiting.length > 0 ? totalWaitMin : '—';
+
+  document.getElementById('p-queue-count').textContent = waiting.length + ' waiting';
+
+  // Patient queue list (only waiting + calling)
+  const pQList = document.getElementById('p-queue-list');
+  const visibleQueue = state.queue.filter(q => q.status !== 'done');
+
+  if (visibleQueue.length === 0) {
+    pQList.innerHTML = '<div style="text-align:center;padding:2rem;font-size:14px;color:var(--gray-400);">Queue is empty — clinic not started yet.</div>';
+  } else {
+    let pos = 0;
+    pQList.innerHTML = visibleQueue.map((p) => {
+      const isCalling = p.status === 'calling';
+      const waitMin = isCalling ? 0 : (pos * avgTime);
+      pos++;
+      return `<div class="queue-row ${isCalling ? 'active' : ''}">
+        <div class="pos">${isCalling ? '▶' : pos}</div>
+        <div class="name">${p.name}</div>
+        <div class="wait-est">${isCalling ? 'In session now' : '~' + waitMin + ' min'}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+/* ═══════════════════════════ TOAST ═══════════════════════════ */
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ═══════════════════════════ NAV ═══════════════════════════ */
+function switchView(view) {
+  document.getElementById('page-receptionist').classList.toggle('active', view === 'receptionist');
+  document.getElementById('page-patient').classList.toggle('active', view === 'patient');
+  document.querySelectorAll('.view-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && view === 'receptionist') || (i === 1 && view === 'patient'));
+  });
+  renderAll();
+}
+
+/* ═══════════════════════════ INIT ═══════════════════════════ */
+// Seed demo data
+function seedDemo() {
+  const patients = [
+    { name: 'Ananya Iyer', reason: 'Fever & headache', age: '24' },
+    { name: 'Rajesh Kumar', reason: 'BP checkup', age: '52' },
+    { name: 'Meena Subramanian', reason: 'Diabetes follow-up', age: '60' },
+    { name: 'Karthik Nair', reason: 'Shoulder pain', age: '35' },
+  ];
+  patients.forEach(p => {
+    state.tokenCounter++;
+    state.queue.push({
+      id: Date.now() + state.tokenCounter,
+      token: 'T' + String(state.tokenCounter).padStart(2, '0'),
+      tokenNum: state.tokenCounter,
+      name: p.name, reason: p.reason, age: p.age,
+      phone: '—', status: 'waiting'
+    });
+  });
+  // Simulate one already called
+  state.queue[0].status = 'calling';
+  state.currentToken = state.queue[0].token;
+  state.currentName = state.queue[0].name;
+}
+
+seedDemo();
+renderAll();
+</script>
+
+</body>
+</html>
