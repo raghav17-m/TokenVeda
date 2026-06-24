@@ -1,4 +1,4 @@
-# TokenVeda — Smart Clinic Queue System
+# TokenSeva — Smart Clinic Queue System
 
 **76% of India's 1.5 million clinics still run on paper token slips and shouting.**
 TokenVeda replaces that with a two-screen, real-time digital queue: a receptionist
