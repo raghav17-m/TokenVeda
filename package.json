@@ -1,0 +1,19 @@
+{
+  "name": "tokenveda",
+  "version": "1.0.0",
+  "description": "TokenVeda — a frictionless digital token & queue system for Indian clinics. Replaces paper slips and shouting with live, synced wait-time visibility for patients, doctors and receptionists.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "license": "MIT"
+}
